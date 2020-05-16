@@ -36,6 +36,7 @@ class Sudoku extends Component {
 
     	this.handleButton = this.handleButton.bind(this);
     	this.checkMiniGrib = this.checkMiniGrib.bind(this);
+    	this.checkRows = this.checkRows.bind(this);
   	}
 
   	componentDidMount(){
@@ -80,12 +81,27 @@ class Sudoku extends Component {
   		//console.log(flatArray);
   		for(let i = 0 ; i < flatArray.length ; i++){
   			for(let j = i + 1; j < flatArray.length ; j++){
-  				if(flatArray[i] === flatArray[j]) return false
+  				if(flatArray[i] === flatArray[j]) return false;
   			}
   		}
 
 
   		return true;
+  	}
+
+  	checkRows(rows){
+  		for(let row = 0; row < rows.length ; row++){
+  			for(let i = 0 ; i < rows[row].length ; i++){
+  				for(let j = i + 1 ; j < rows[row].length ; j++){
+  					
+  					if(rows[row][i] === rows[row][j]) return false;
+  					
+  				}
+  			}
+  		}
+
+  		return  true;
+
   	}
 
   	handleButton(event){
@@ -94,26 +110,51 @@ class Sudoku extends Component {
   		for(let i = 0 ; i < game.length ; i++){
   			for(let j = 0 ; j < game[i].length ; j++){
   				if(!this.checkMiniGrib(game[i][j])){
-  					console.log("invalid Sudoku");
+  					console.log("invalid Sudoku mini grid");
   					return
   				} else {
-  					//console.log("valid Sudoku")
+  					console.log("valid Sudoku mini grid")
   				}
   			}
   		}
   		//At this point, all the miniboards have been checked and are valid
   		//Next, check all rows and columns 
+  
 
   		
-  		for(let i = 0 ; i < game.length ; i++){
-  			for(let j = 0 ; j < game[i].length ; j++){
-  				//console.log(game[i][j]);
-  				//row.push(game[i][j][0]);
-  				for(let r = 0 ; r < game[i][j].length ; r++){
-  					console.log(game[i][j][r]);
+
+  		/**
+  		*
+  		* Dev Note, In my head, i would have thought that the below loops would stop at correct length that it is tracking
+  		* But in the r loop, if i tell it to stop at game[i][j].length i get an undefined error, but I can see the length outsidse of the loop
+  		*
+  		*/
+  		/*console.log(game.length);
+  		console.log(game[i].length);
+  		console.log(game[i][j].length);
+  		console.log(game[i][j][r].length);*/
+
+  		let rows = [];
+  		let rowIndex = 0;
+
+  		//Get all the roas from game and push them onto rows
+  		for(let i = 0 ; i < game.length; i++){
+  			for(let r = 0 ; r < game[i].length; r++){
+  				rows[rowIndex] = [];
+  				for(let j = 0 ; j < game[i].length ; j++){
+  					for(let c = 0; c < game[i].length; c++){
+  						rows[rowIndex].push(game[i][j][r][c]);
+  					}
   				}
+  				rowIndex++;
   			}
-  			//console.log(row);
+  		}
+
+  		if(!this.checkRows(rows)){
+  			console.log("invalid sudoku row");
+  			return;
+  		} else {
+  			console.log("valid rows");
   		}
 
   	}
