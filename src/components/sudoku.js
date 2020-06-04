@@ -35,7 +35,6 @@ class Sudoku extends Component {
     	};
 
     	this.handleButton = this.handleButton.bind(this);
-    	this.checkMiniGrib = this.checkMiniGrib.bind(this);
     	this.checkForDuplicates = this.checkForDuplicates.bind(this);
   	}
 
@@ -43,85 +42,42 @@ class Sudoku extends Component {
  
   	}
 
-  	checkMiniGrib(miniBoard){
-  		//console.log("inside checkMiniGrib");
-
-  		/************ Version 1 ************
-  		* The below code does work, but it is checking two cells that have already been checked
-  		*
-  		************************************/
-
-  		/*for(let r = 0; r < miniBoard.length ; r++){
-  			for(let c = 0 ; c < miniBoard[r].length ; c++){
-  				//console.log(`row ${r} cell ${c} value ${miniBoard[r][c]}`);
-  				for(let i = r ; i < miniBoard.length ; i++){
-  					for(let j = 0 ; j < miniBoard[r].length ; j++){
-  						console.log(`checking ${miniBoard[r][c]} with ${miniBoard[i][j]}`); 
-  						if((r === i) && (c === j)){
-  							console.log("dont need to check this cell");
-  						} else if (miniBoard[r][c] === miniBoard[i][j]){
-  							console.log("duplicate cell values"); 
-  							return false;
-  						} else {
-  							console.log("keep checking");
-  						}
-  					}
-  				}
-
-  			}
-  		} */
-
-  		/************ Version 2 ************
-  		* Given a 2D array, flatten it, and then check for duplicates
-  		*
-  		************************************/
-
-  		let flatArray = miniBoard.toString().split(',');
-
-  		for(let i = 0 ; i < flatArray.length ; i++){
-  			for(let j = i + 1; j < flatArray.length ; j++){
-  				if(flatArray[i] === flatArray[j]) return false;
-  			}
-  		}
-
-
-  		return true;
-  	}
-
+  	//Check a 2D array to see if there is a duplicate in a row
   	checkForDuplicates(table){
   		for(let row = 0; row < table.length ; row++){
   			for(let i = 0 ; i < table[row].length ; i++){
   				for(let j = i + 1 ; j < table[row].length ; j++){
-  					
   					if(table[row][i] === table[row][j]) return false;
-  					
   				}
   			}
   		}
 
   		return  true;
-
   	}
 
   	handleButton(event){
   		let game = this.state.board
 
+		//Check mini grids
+  		let miniGrid = []
+  		let miniGridIndex = 0;
+
   		for(let i = 0 ; i < game.length ; i++){
   			for(let j = 0 ; j < game[i].length ; j++){
-  				if(!this.checkMiniGrib(game[i][j])){
-  					console.log("invalid Sudoku mini grid");
-  					return
-  				} else {
-  					console.log("valid Sudoku mini grid")
-  				}
+  				miniGrid[miniGridIndex] = game[i][j].toString().split(',');
+  				miniGridIndex++;
   			}
   		}
-  		//At this point, all the miniboards have been checked and are valid
-  		//Next, check all rows and columns 
+
+  		if(!this.checkForDuplicates(miniGrid)){
+  			console.log("invalid sudoku mini grid");
+  			return;
+  		} else {
+  			console.log("valid mini grid");
+  		}
   
 
-  		
-
+  		//Check Rows
   		/**
   		*
   		* Dev Note, In my head, i would have thought that the below loops would stop at correct length that it is tracking
@@ -156,6 +112,7 @@ class Sudoku extends Component {
   			console.log("valid rows");
   		}
 
+  		//Check Columns
   		let cols = [];
   		let colIndex = 0;
   		for(let j = 0 ; j < game.length ; j++){
@@ -168,7 +125,6 @@ class Sudoku extends Component {
   				}
   				colIndex++;
   			}
-
   		}
   		 if(!this.checkForDuplicates(cols)){
   			console.log("invalid sudoku columns");
@@ -176,7 +132,6 @@ class Sudoku extends Component {
   		} else {
   			console.log("valid columns");
   		}
-
   	}
 
 
