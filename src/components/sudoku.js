@@ -36,7 +36,7 @@ class Sudoku extends Component {
 
     	this.handleButton = this.handleButton.bind(this);
     	this.checkMiniGrib = this.checkMiniGrib.bind(this);
-    	this.checkRows = this.checkRows.bind(this);
+    	this.checkForDuplicates = this.checkForDuplicates.bind(this);
   	}
 
   	componentDidMount(){
@@ -78,7 +78,6 @@ class Sudoku extends Component {
 
   		let flatArray = miniBoard.toString().split(',');
 
-  		//console.log(flatArray);
   		for(let i = 0 ; i < flatArray.length ; i++){
   			for(let j = i + 1; j < flatArray.length ; j++){
   				if(flatArray[i] === flatArray[j]) return false;
@@ -89,12 +88,12 @@ class Sudoku extends Component {
   		return true;
   	}
 
-  	checkRows(rows){
-  		for(let row = 0; row < rows.length ; row++){
-  			for(let i = 0 ; i < rows[row].length ; i++){
-  				for(let j = i + 1 ; j < rows[row].length ; j++){
+  	checkForDuplicates(table){
+  		for(let row = 0; row < table.length ; row++){
+  			for(let i = 0 ; i < table[row].length ; i++){
+  				for(let j = i + 1 ; j < table[row].length ; j++){
   					
-  					if(rows[row][i] === rows[row][j]) return false;
+  					if(table[row][i] === table[row][j]) return false;
   					
   				}
   			}
@@ -137,7 +136,7 @@ class Sudoku extends Component {
   		let rows = [];
   		let rowIndex = 0;
 
-  		//Get all the roas from game and push them onto rows
+  		//Get all the rows from game and push them onto rows
   		for(let i = 0 ; i < game.length; i++){
   			for(let r = 0 ; r < game[i].length; r++){
   				rows[rowIndex] = [];
@@ -150,11 +149,32 @@ class Sudoku extends Component {
   			}
   		}
 
-  		if(!this.checkRows(rows)){
+  		if(!this.checkForDuplicates(rows)){
   			console.log("invalid sudoku row");
   			return;
   		} else {
   			console.log("valid rows");
+  		}
+
+  		let cols = [];
+  		let colIndex = 0;
+  		for(let j = 0 ; j < game.length ; j++){
+  			for(let c = 0 ; c < game.length ; c++){
+  				cols[colIndex] = [];
+  				for(let i = 0 ; i < game.length ; i++){
+  					for(let r = 0 ; r < game.length ; r++){
+  						cols[colIndex].push(game[i][j][r][c]);
+  					}
+  				}
+  				colIndex++;
+  			}
+
+  		}
+  		 if(!this.checkForDuplicates(cols)){
+  			console.log("invalid sudoku columns");
+  			return;
+  		} else {
+  			console.log("valid columns");
   		}
 
   	}
